@@ -76,6 +76,12 @@ body {
     font-size: 0.8rem;
     color: #6c757d;
     margin-bottom: 0.3vh;
+    display: flex;
+    gap: 0.25em;
+}
+
+.header-update-label {
+    min-width: 6.25em;
 }
 
 .header-stats-line {
@@ -101,10 +107,11 @@ body {
     flex-shrink: 0; /* Prevent buttons from shrinking */
 }
 
-#last-updated-text {
+#last-updated-text, #next-update-text {
     color: #0072bd;
     font-weight: 600;
 }
+
 
 /* ==========================================================================
    Download Button Header Component

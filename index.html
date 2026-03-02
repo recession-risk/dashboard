@@ -44,7 +44,8 @@
                         <div class="header-stats-line">
                             <span id="header-prev-stats">Previous: --</span>
                         </div>                        
-                        <div class="header-update-line">Last Updated: <span id="last-updated-text">--</span></div>
+                        <div class="header-update-line"><span class="header-update-label">Last Updated:</span><span id="last-updated-text">--</span></div>
+                        <div class="header-update-line"><span class="header-update-label">Next Update:</span><span id="next-update-text">--</span></div>
                     </div>
                     <div class="header-downloads">
                         <button id="download-btn" class="download-button-header">
@@ -141,16 +142,16 @@
                     
                     <div class="faq-simple-item">
                         <div class="faq-simple-question">Q: What is the goal of the recession risk nowcast?</div>
-                        <div class="faq-simple-answer">A: Timely knowledge of whether the economy is experiencing a broad-based decline in economic activity is a key input to a variety of decision-making processes. <a href="https://doi.org/10.4337/9781035310050.00011" target="_blank">Furno and Giannone (2024)</a> show that recessions are characterized by the joint occurence of soft economic data and tight financial conditions: the recession risk nowcast leverages this insight to produce timely and reliable estimates of the probability that the economy is undergoing a recession. The nowcast is available the first business day after the reference month closes, and is as accurate as professional forecasters at identifying expansions versus contractions in real-time.</div>
+                        <div class="faq-simple-answer">A: Timely knowledge of whether the economy is experiencing a broad-based decline in economic activity is a key input to a variety of decision-making processes. <a href="https://doi.org/10.4337/9781035310050.00011" target="_blank">Furno and Giannone (2024)</a> show that recessions are characterized by the joint occurrence of soft economic data and tight financial conditions: the recession risk nowcast leverages this insight to produce timely and reliable estimates of the probability that the economy is undergoing a recession. The nowcast is available the first business day after the reference month closes, and is as accurate as professional forecasters at identifying expansions versus contractions in real-time.</div>
                     </div>
 
                     <div class="faq-simple-item">
                         <div class="faq-simple-question">Q: What is the schedule for reporting and updating the recession risk estimates?</div>
-                        <div class="faq-simple-answer">A: The recession risk nowcast estimates the probability that the economy is in a state of recession in the current month. For example, a 25% recession risk for November means there is a 25% chance the economy is in a state of recession in November. These estimates are available on the first business day after the reference month closes. For example, recession risk for November becomes available on the first business day of December. This is possible because the model uses timely indicators: the ISM PMI Manufacturing (released at the beginning of the next month), the Economic Sentiment Indicator (released at month-end), and the CISS financial stress index (available daily).</div>
+                        <div class="faq-simple-answer">A: The recession risk nowcast estimates the probability that the economy is in recession in the current month. For example, a 25% recession risk for November means there is a 25% chance the economy is in recession in November. These estimates are available on the first business day after the reference month closes. For example, recession risk for November becomes available on the first business day of December. This is possible because the model uses timely indicators: the ISM PMI Manufacturing (released at the beginning of the next month), the Economic Sentiment Indicator (released at month-end), and the CISS financial stress index (available daily).</div>
                     </div>
 
                     <div class="faq-simple-item">
-                        <div class="faq-simple-question">Q: What are the input data?</div>
+                        <div class="faq-simple-question">Q: What data does the model use?</div>
                         <div class="faq-simple-answer">A: The model combines macroeconomic and financial conditions specific to each region or country. For the US, it uses the <a href="https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/" target="_blank">ISM PMI Manufacturing</a> and the <a href="https://doi.org/10.1093/rof/rfaf013" target="_blank">Composite Indicator of Systemic Stress (CISS)</a>. The ISM PMI Manufacturing is a monthly diffusion index based on surveys of purchasing managers at manufacturing companies, measuring key business conditions like new orders, production, and employment. For the euro area, the model uses the <a href="https://economy-finance.ec.europa.eu/economic-forecast-and-surveys/business-and-consumer-surveys/latest-business-and-consumer-surveys_en" target="_blank">Economic Sentiment Indicator (ESI)</a> and the CISS. The ESI captures real economic activity through surveys across industry (40%), services (30%), consumers (20%), retail (5%), and construction (5%). The CISS measures financial market stress across five key segments: bonds, equities, money markets, foreign exchange, and financial intermediaries, using a methodology that accounts for cross-market correlations.</div>
                     </div>
 
@@ -231,7 +232,7 @@
 
     <footer class="site-footer">
     <div class="footer-content">
-        <p class="footer-copyright">© 2026  Domenico Giannone. All rights reserved. Contact: <a href="mailto:info@recessionrisk.com">info@recessionrisk.com</a>.</p>
+        <p class="footer-copyright">© 2026  Francesco Furno and Domenico Giannone. All rights reserved. Contact: <a href="mailto:info@recessionrisk.com">info@recessionrisk.com</a>.</p>
     </div>
 </footer>
 </body>

@@ -682,6 +682,12 @@ class RecessionRiskVisualizer {
             const formattedDate = this.lastModified.toLocaleDateString('en-US', options);
             lastUpdatedEl.textContent = formattedDate;
         }
+        fetch('data/next_update.txt')
+            .then(r => r.text())
+            .then(text => {
+                const nextUpdateEl = document.getElementById('next-update-text');
+                if (nextUpdateEl) nextUpdateEl.textContent = text.trim();
+            });
     }
 
     updateVisualRange() {
