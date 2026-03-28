@@ -75,7 +75,7 @@ body {
 .header-update-line {
     font-size: 0.8rem;
     color: #6c757d;
-    margin-bottom: 0.3vh;
+    margin-bottom: 0.6vh;
     display: flex;
     gap: 0.25em;
 }
@@ -160,7 +160,7 @@ body {
     cursor: pointer;
     border-bottom: 3px solid transparent;
     transition: all 0.3s ease;
-    text-transform: uppercase;
+    font-variant: small-caps;
     letter-spacing: 0.5px;
 }
 
@@ -365,6 +365,185 @@ body {
     cursor: not-allowed;
     color: #6c757d;
     opacity: 0.6;
+}
+
+/* ==========================================================================
+   Range Picker Component (quick-range buttons + month inputs)
+   ========================================================================== */
+.range-picker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+}
+
+.range-picker::before {
+    content: '';
+    width: 1px;
+    height: 40px;
+    background: #dee2e6;
+    margin-right: 3px;
+}
+
+.quick-range-buttons {
+    display: flex;
+    gap: 0;
+}
+
+.quick-range-btn {
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    background: white;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quick-range-btn:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+.quick-range-btn:last-child {
+    border-radius: 0 4px 4px 0;
+}
+
+.quick-range-btn:not(:first-child) {
+    border-left: none;
+}
+
+.quick-range-btn:hover {
+    background: rgba(0, 114, 189, 0.05);
+    color: #0072bd;
+}
+
+.quick-range-btn.active {
+    background: #0072bd;
+    color: white;
+    border-color: #0072bd;
+}
+
+.quick-range-btn.active + .quick-range-btn {
+    border-left-color: #0072bd;
+}
+
+.month-inputs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.month-picker-wrap {
+    position: relative;
+}
+
+.month-input {
+    padding: 4px 8px;
+    font-size: 0.78rem;
+    font-family: inherit;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background: white;
+    color: #212529;
+    cursor: pointer;
+    min-width: 90px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.month-input:hover {
+    border-color: #0072bd;
+}
+
+.month-input.open {
+    border-color: #0072bd;
+    box-shadow: 0 0 0 2px rgba(0, 114, 189, 0.1);
+}
+
+.month-input-separator {
+    font-size: 0.78rem;
+    color: #6c757d;
+}
+
+/* Month picker popup */
+.month-picker-popup {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    padding: 10px;
+    z-index: 2000;
+    width: 200px;
+}
+
+.month-picker-popup.show {
+    display: block;
+}
+
+.month-picker-year-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.month-picker-year-nav button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px 6px;
+    font-size: 0.85rem;
+    color: #495057;
+    border-radius: 4px;
+}
+
+.month-picker-year-nav button:hover {
+    background: #f1f3f5;
+    color: #0072bd;
+}
+
+.month-picker-year-nav span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #212529;
+}
+
+.month-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3px;
+}
+
+.month-picker-grid button {
+    padding: 5px 2px;
+    font-size: 0.72rem;
+    font-family: inherit;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: none;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.month-picker-grid button:hover:not(:disabled) {
+    background: rgba(0, 114, 189, 0.08);
+    color: #0072bd;
+}
+
+.month-picker-grid button.selected {
+    background: #0072bd;
+    color: white;
+}
+
+.month-picker-grid button:disabled {
+    color: #ced4da;
+    cursor: default;
 }
 
 /* ==========================================================================
@@ -917,6 +1096,37 @@ body {
         min-width: 55px;
         text-align: center;
     }
+
+    .range-picker {
+        margin-left: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .range-picker::before {
+        display: none;
+    }
+
+    .quick-range-buttons {
+        justify-content: center;
+    }
+
+    .month-inputs {
+        justify-content: center;
+    }
+
+    .month-input {
+        min-width: 80px;
+        font-size: 0.75rem;
+    }
+
+    .month-picker-popup {
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
     .content {
         padding: 15px 20px 25px 20px;
     }
@@ -1105,6 +1315,17 @@ body {
         padding: 3px 5px;
         min-width: 50px;
         text-align: center;
+    }
+
+    .month-input {
+        min-width: 75px;
+        font-size: 0.72rem;
+        padding: 3px 6px;
+    }
+
+    .quick-range-btn {
+        padding: 3px 8px;
+        font-size: 0.72rem;
     }
 
     .download-row-split {

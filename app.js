@@ -446,7 +446,25 @@ class RecessionRiskVisualizer {
         document.getElementById('time-range-start').addEventListener('input', () => this.handleRangeChange());
         document.getElementById('time-range-end').addEventListener('input', () => this.handleRangeChange());
         document.getElementById('download-btn').addEventListener('click', () => this.downloadCSV());
-        
+
+        // Month picker listeners
+        document.getElementById('range-month-start').addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleMonthPicker('start');
+        });
+        document.getElementById('range-month-end').addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleMonthPicker('end');
+        });
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.month-picker-wrap')) this.closeAllMonthPickers();
+        });
+
+        // Quick-range button listeners
+        document.querySelectorAll('.quick-range-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => this.handleQuickRange(e.target.dataset.range));
+        });
+
         this.updateRangeSliders();
         this.updateSelectedCountDisplay();
     }
@@ -808,8 +826,229 @@ class RecessionRiskVisualizer {
         if (endLabel && allTimePoints[endIndex]) {
             endLabel.textContent = allTimePoints[endIndex];
         }
+
+        // Sync month inputs
+        this.syncMonthInputs(allTimePoints, startIndex, endIndex);
     }
-    
+
+    timePointToMonthValue(timeStr) {
+        const date = this.parseTimeString(timeStr);
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        return `${y}-${m}`;
+    }
+
+    syncMonthInputs(allTimePoints, startIndex, endIndex) {
+        const startBtn = document.getElementById('range-month-start');
+        const endBtn = document.getElementById('range-month-end');
+        if (!startBtn || !endBtn || allTimePoints.length === 0) return;
+
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+        if (allTimePoints[startIndex]) {
+            const d = this.parseTimeString(allTimePoints[startIndex]);
+            startBtn.textContent = `${months[d.getMonth()]} ${d.getFullYear()}`;
+        }
+        if (allTimePoints[endIndex]) {
+            const d = this.parseTimeString(allTimePoints[endIndex]);
+            endBtn.textContent = `${months[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        this.updateQuickRangeActive(allTimePoints, startIndex, endIndex);
+    }
+
+    toggleMonthPicker(which) {
+        const other = which === 'start' ? 'end' : 'start';
+        const popup = document.getElementById(`month-picker-${which}`);
+        const otherPopup = document.getElementById(`month-picker-${other}`);
+        const btn = document.getElementById(`range-month-${which}`);
+        const otherBtn = document.getElementById(`range-month-${other}`);
+
+        // Close the other one
+        otherPopup.classList.remove('show');
+        otherBtn.classList.remove('open');
+
+        if (popup.classList.contains('show')) {
+            popup.classList.remove('show');
+            btn.classList.remove('open');
+            return;
+        }
+
+        btn.classList.add('open');
+        // Reset picker year to current selection only when opening
+        if (!this._pickerYear) this._pickerYear = {};
+        const allTP = this.getAllTimePoints();
+        const sliderEl = document.getElementById(which === 'start' ? 'time-range-start' : 'time-range-end');
+        const curIdx = parseInt(sliderEl.value);
+        if (allTP[curIdx]) {
+            this._pickerYear[which] = this.parseTimeString(allTP[curIdx]).getFullYear();
+        }
+        this.renderMonthPicker(which);
+        popup.classList.add('show');
+    }
+
+    closeAllMonthPickers() {
+        document.querySelectorAll('.month-picker-popup').forEach(p => p.classList.remove('show'));
+        document.querySelectorAll('.month-input').forEach(b => b.classList.remove('open'));
+    }
+
+    renderMonthPicker(which) {
+        const popup = document.getElementById(`month-picker-${which}`);
+        const allTimePoints = this.getAllTimePoints();
+        if (allTimePoints.length === 0) return;
+
+        const minDate = this.parseTimeString(allTimePoints[0]);
+        const maxDate = this.parseTimeString(allTimePoints[allTimePoints.length - 1]);
+
+        // Get current selection
+        const sliderEl = document.getElementById(which === 'start' ? 'time-range-start' : 'time-range-end');
+        const idx = parseInt(sliderEl.value);
+        const currentDate = this.parseTimeString(allTimePoints[idx] || allTimePoints[0]);
+
+        if (!this._pickerYear) this._pickerYear = {};
+        if (this._pickerYear[which] == null) this._pickerYear[which] = currentDate.getFullYear();
+
+        const year = this._pickerYear[which];
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+        const canPrev = year > minDate.getFullYear();
+        const canNext = year < maxDate.getFullYear();
+
+        popup.innerHTML = `
+            <div class="month-picker-year-nav">
+                <button data-dir="prev" ${canPrev ? '' : 'disabled'}>&#9664;</button>
+                <span>${year}</span>
+                <button data-dir="next" ${canNext ? '' : 'disabled'}>&#9654;</button>
+            </div>
+            <div class="month-picker-grid">
+                ${months.map((m, i) => {
+                    const d = new Date(year, i, 1);
+                    const outOfRange = d < new Date(minDate.getFullYear(), minDate.getMonth(), 1) ||
+                                       d > new Date(maxDate.getFullYear(), maxDate.getMonth(), 1);
+                    const isSelected = year === currentDate.getFullYear() && i === currentDate.getMonth();
+                    return `<button data-month="${i}" ${outOfRange ? 'disabled' : ''} class="${isSelected ? 'selected' : ''}">${m}</button>`;
+                }).join('')}
+            </div>`;
+
+        // Year nav events
+        popup.querySelectorAll('.month-picker-year-nav button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this._pickerYear[which] += btn.dataset.dir === 'prev' ? -1 : 1;
+                this.renderMonthPicker(which);
+            });
+        });
+
+        // Month click events
+        popup.querySelectorAll('.month-picker-grid button:not(:disabled)').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const month = parseInt(btn.dataset.month);
+                this.applyMonthSelection(which, year, month);
+                this.closeAllMonthPickers();
+            });
+        });
+    }
+
+    applyMonthSelection(which, year, month) {
+        const allTimePoints = this.getAllTimePoints();
+        if (allTimePoints.length === 0) return;
+
+        // Find the closest matching index
+        let bestIdx = 0;
+        let bestDiff = Infinity;
+        const target = new Date(year, month, 1);
+
+        for (let i = 0; i < allTimePoints.length; i++) {
+            const d = this.parseTimeString(allTimePoints[i]);
+            const diff = Math.abs(d - target);
+            if (diff < bestDiff) { bestDiff = diff; bestIdx = i; }
+        }
+
+        const startSlider = document.getElementById('time-range-start');
+        const endSlider = document.getElementById('time-range-end');
+
+        if (which === 'start') {
+            let endVal = parseInt(endSlider.value);
+            if (bestIdx >= endVal) endVal = Math.min(bestIdx + 1, allTimePoints.length - 1);
+            startSlider.value = bestIdx;
+            endSlider.value = endVal;
+        } else {
+            let startVal = parseInt(startSlider.value);
+            if (bestIdx <= startVal) startVal = Math.max(bestIdx - 1, 0);
+            startSlider.value = startVal;
+            endSlider.value = bestIdx;
+        }
+
+        this.updateRangeLabels();
+        this.updateVisualRange();
+        this.updateChart();
+    }
+
+    handleQuickRange(range) {
+        const allTimePoints = this.getAllTimePoints();
+        if (allTimePoints.length === 0) return;
+
+        const endIdx = allTimePoints.length - 1;
+        let startIdx = 0;
+
+        if (range !== 'Max') {
+            const years = parseInt(range);
+            const endDate = this.parseTimeString(allTimePoints[endIdx]);
+            const targetDate = new Date(endDate);
+            targetDate.setFullYear(targetDate.getFullYear() - years);
+
+            // Find closest index
+            let bestIdx = 0;
+            let bestDiff = Infinity;
+            for (let i = 0; i < allTimePoints.length; i++) {
+                const d = this.parseTimeString(allTimePoints[i]);
+                const diff = Math.abs(d - targetDate);
+                if (diff < bestDiff) { bestDiff = diff; bestIdx = i; }
+            }
+            startIdx = bestIdx;
+        }
+
+        const startSlider = document.getElementById('time-range-start');
+        const endSlider = document.getElementById('time-range-end');
+        startSlider.value = startIdx;
+        endSlider.value = endIdx;
+
+        // Update active button
+        document.querySelectorAll('.quick-range-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.quick-range-btn[data-range="${range}"]`)?.classList.add('active');
+
+        this.updateRangeLabels();
+        this.updateVisualRange();
+        this.updateChart();
+    }
+
+    updateQuickRangeActive(allTimePoints, startIndex, endIndex) {
+        const buttons = document.querySelectorAll('.quick-range-btn');
+        const endIdx = allTimePoints.length - 1;
+
+        // Only highlight if end is at max
+        if (endIndex !== endIdx) {
+            buttons.forEach(b => b.classList.remove('active'));
+            return;
+        }
+
+        if (startIndex === 0) {
+            buttons.forEach(b => b.classList.remove('active'));
+            document.querySelector('.quick-range-btn[data-range="Max"]')?.classList.add('active');
+            return;
+        }
+
+        const endDate = this.parseTimeString(allTimePoints[endIdx]);
+        const startDate = this.parseTimeString(allTimePoints[startIndex]);
+        const diffYears = Math.round((endDate - startDate) / (365.25 * 24 * 60 * 60 * 1000));
+
+        buttons.forEach(b => b.classList.remove('active'));
+        if ([1, 5, 10].includes(diffYears)) {
+            document.querySelector(`.quick-range-btn[data-range="${diffYears}Y"]`)?.classList.add('active');
+        }
+    }
+
     showOOSDataError(missingCountries) {
         const countryNames = missingCountries.map(country => this.countryLabels[country] || country);
         

@@ -29,8 +29,8 @@
         </div>
         
         <div class="tab-navigation">
-            <button class="tab-button active" data-tab="dashboard">Dashboard</button>
-            <button class="tab-button" data-tab="faq">FAQ</button>
+            <button class="tab-button active" data-tab="dashboard">DASHBOARD</button>
+            <button class="tab-button" data-tab="faq">FAQs</button>
         </div>
      
 
@@ -113,9 +113,28 @@
                                     <span>Both</span>
                                 </label>
                             </div>
+                            <div class="range-picker">
+                                <div class="quick-range-buttons">
+                                    <button class="quick-range-btn" data-range="1Y">1Y</button>
+                                    <button class="quick-range-btn" data-range="5Y">5Y</button>
+                                    <button class="quick-range-btn" data-range="10Y">10Y</button>
+                                    <button class="quick-range-btn active" data-range="Max">Max</button>
+                                </div>
+                                <div class="month-inputs">
+                                    <div class="month-picker-wrap">
+                                        <button class="month-input" id="range-month-start" data-target="start">Jan 1980</button>
+                                        <div class="month-picker-popup" id="month-picker-start"></div>
+                                    </div>
+                                    <span class="month-input-separator">to</span>
+                                    <div class="month-picker-wrap">
+                                        <button class="month-input" id="range-month-end" data-target="end">Mar 2026</button>
+                                        <div class="month-picker-popup" id="month-picker-end"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    
+
                     <div class="chart-container">
                         <canvas id="chart"></canvas>
                     </div>
