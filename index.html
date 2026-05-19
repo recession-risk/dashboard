@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NE1YMTXXCH"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-NE1YMTXXCH');
+    </script>
+
+    <!-- SEO tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
+    <title>RecessionRisk.com</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>RecessionRisk.com</h1>
+            <p>Based on "<a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4706700" style="color: #adb5bd; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Nowcasting Recession Risk</a>" by Furno and Giannone (2024)</p>
+        </div>
+        
+        <div class="tab-navigation">
+            <button class="tab-button active" data-tab="dashboard">DASHBOARD</button>
+            <button class="tab-button" data-tab="data">DATA</button>
+            <button class="tab-button" data-tab="faq">FAQs</button>
+        </div>
+     
+
+        <div class="content">
+            <div id="dashboard-tab" class="tab-content active">
+                <div class="header-info-section">
+                    <div class="header-left-info">
+                        <div class="header-stats-line">
+                            <span id="header-latest-stats">Latest: --</span>
+                        </div>
+                        <div class="header-stats-line">
+                            <span id="header-prev-stats">Previous: --</span>
+                        </div>                        
+                        <div class="header-update-line"><span class="header-update-label">Last Updated:</span><span id="last-updated-text">--</span></div>
+                        <div class="header-update-line"><span class="header-update-label">Next Update:</span><span id="next-update-text">--</span></div>
+                    </div>
+                    <div class="header-downloads">
+                        <button id="download-btn" class="download-button-header">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7,10 12,15 17,10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Data
+                        </button>                           
+                        <button onclick="window.open('https://www.amazon.science/publications/nowcasting-recession-risk', '_blank')" class="download-button-header">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                <polyline points="15,3 21,3 21,9"/>
+                                <line x1="10" y1="14" x2="21" y2="3"/>
+                            </svg>
+                            Working Paper
+                        </button>
+                        <button onclick="window.open('https://doi.org/10.4337/9781035310050.00011', '_blank')" class="download-button-header">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                <polyline points="15,3 21,3 21,9"/>
+                                <line x1="10" y1="14" x2="21" y2="3"/>
+                            </svg>
+                            Handbook Chapter
+                        </button>
+
+                    </div>
+                </div>
+                
+                <div id="loading" class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Processing data...</p>
+                </div>
+                
+                <div id="error" class="error" style="display: none;"></div>
+                
+                <div id="chart-section" style="display: none;">
+                    <div class="countries-control">
+                        <div class="countries-control-box">
+                            <div class="country-dropdown">
+                                <div class="dropdown-selected" id="country-dropdown-selected">
+                                    <span id="selected-count">1 selected</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6,9 12,15 18,9"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="dropdown-menu" id="country-dropdown-menu">
+                                    <label><input type="checkbox" value="US" checked> United States</label>
+                                    <label><input type="checkbox" value="EA"> Euro Area</label>
+                                </div>
+                            </div>
+                            
+                            <div class="estimation-method">
+                                <label>
+                                    <input type="radio" name="estimation" value="latest" checked>
+                                    <span>Latest</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="estimation" value="realtime">
+                                    <span>Real-Time</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="estimation" value="both" id="both-option">
+                                    <span>Both</span>
+                                </label>
+                            </div>
+                            <div class="range-picker">
+                                <div class="quick-range-buttons">
+                                    <button class="quick-range-btn" data-range="1Y">1Y</button>
+                                    <button class="quick-range-btn" data-range="5Y">5Y</button>
+                                    <button class="quick-range-btn" data-range="10Y">10Y</button>
+                                    <button class="quick-range-btn active" data-range="Max">Max</button>
+                                </div>
+                                <div class="month-inputs">
+                                    <div class="month-picker-wrap">
+                                        <button class="month-input" id="range-month-start" data-target="start">Jan 1980</button>
+                                        <div class="month-picker-popup" id="month-picker-start"></div>
+                                    </div>
+                                    <span class="month-input-separator">to</span>
+                                    <div class="month-picker-wrap">
+                                        <button class="month-input" id="range-month-end" data-target="end">Mar 2026</button>
+                                        <div class="month-picker-popup" id="month-picker-end"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="chart"></canvas>
+                    </div>
+                    
+                    <div class="time-range-container">
+                        <div class="range-slider-container">
+                            <input type="range" id="time-range-start" min="0" max="27" value="0" class="range-slider">
+                            <input type="range" id="time-range-end" min="0" max="27" value="27" class="range-slider">
+                            <div class="range-display">
+                                <span id="range-start-label">January 1980</span>
+                                <span>to</span>
+                                <span id="range-end-label">June 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Tab Content -->
+            <div id="data-tab" class="tab-content">
+                <div class="scatter-subnav">
+                    <button class="scatter-mode-btn active" data-mode="US">United States</button>
+                    <button class="scatter-mode-btn" data-mode="EA">Euro Area</button>
+                    <button class="scatter-mode-btn" data-mode="compare">Compare</button>
+                </div>
+                <div class="scatter-container">
+                    <div class="scatter-grid mode-US">
+                        <figure class="scatter-figure" data-country="US">
+                            <object type="image/svg+xml" data="scatter_plots/scatter_US.svg" aria-label="Scatter plot of macroeconomic activity vs. financial stress during US recessions and expansions"></object>
+                        </figure>
+                        <figure class="scatter-figure" data-country="EA">
+                            <object type="image/svg+xml" data="scatter_plots/scatter_EA.svg" aria-label="Scatter plot of macroeconomic activity vs. financial stress during euro area recessions and expansions"></object>
+                        </figure>
+                    </div>
+                    <p class="scatter-intro">Recessions (red) are characterized by the joint occurrence of soft economic sentiment and tight financial conditions, while expansions (blue) show the opposite pattern. The minimal overlap between the two distributions illustrates why combining macroeconomic and financial conditions improves recession detection.</p>
+                </div>
+            </div>
+
+            <!-- FAQ Tab Content -->
+            <div id="faq-tab" class="tab-content">
+                <div class="faq-simple-container">
+                    
+                    <h1 class="faq-main-title">Frequently Asked Questions</h1>
+                    
+                    <div class="faq-simple-item">
+                        <div class="faq-simple-question">Q: What is the goal of the recession risk nowcast?</div>
+                        <div class="faq-simple-answer">A: Timely knowledge of whether the economy is experiencing a broad-based decline in economic activity is a key input to a variety of decision-making processes. <a href="https://doi.org/10.4337/9781035310050.00011" target="_blank">Furno and Giannone (2024)</a> show that recessions are characterized by the joint occurrence of soft economic data and tight financial conditions: the recession risk nowcast leverages this insight to produce timely and reliable estimates of the probability that the economy is undergoing a recession. The nowcast is available the first business day after the reference month closes, and is as accurate as professional forecasters at identifying expansions versus contractions in real-time.</div>
+                    </div>
+
+                    <div class="faq-simple-item">
+                        <div class="faq-simple-question">Q: What is the schedule for reporting and updating the recession risk estimates?</div>
+                        <div class="faq-simple-answer">A: The recession risk nowcast estimates the probability that the economy is in recession in the current month. For example, a 25% recession risk for November means there is a 25% chance the economy is in recession in November. These estimates are available on the first business day after the reference month closes. For example, recession risk for November becomes available on the first business day of December. This is possible because the model uses timely indicators: the ISM PMI Manufacturing (released at the beginning of the next month), the Economic Sentiment Indicator (released at month-end), and the CISS financial stress index (available daily).</div>
+                    </div>
+
+                    <div class="faq-simple-item">
+                        <div class="faq-simple-question">Q: What data does the model use?</div>
+                        <div class="faq-simple-answer">A: The model combines macroeconomic and financial conditions specific to each region or country. For the US, it uses the <a href="https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/" target="_blank">ISM PMI Manufacturing</a> and the <a href="https://doi.org/10.1093/rof/rfaf013" target="_blank">Composite Indicator of Systemic Stress (CISS)</a>. The ISM PMI Manufacturing is a monthly diffusion index based on surveys of purchasing managers at manufacturing companies, measuring key business conditions like new orders, production, and employment. For the euro area, the model uses the <a href="https://economy-finance.ec.europa.eu/economic-forecast-and-surveys/business-and-consumer-surveys/latest-business-and-consumer-surveys_en" target="_blank">Economic Sentiment Indicator (ESI)</a> and the CISS. The ESI captures real economic activity through surveys across industry (40%), services (30%), consumers (20%), retail (5%), and construction (5%). The CISS measures financial market stress across five key segments: bonds, equities, money markets, foreign exchange, and financial intermediaries, using a methodology that accounts for cross-market correlations.</div>
+                    </div>
+
+                    <div class="faq-simple-item">
+                        <div class="faq-simple-question">Q: Why do you include financial conditions alongside economic indicators?</div>
+                        <div class="faq-simple-answer">A: Financial conditions provide crucial complementary information about the current state of the economy. <a href="https://doi.org/10.4337/9781035310050.00011" target="_blank">Furno and Giannone (2024)</a> show that financial stress often signals economic distress in real-time, sometimes before it shows up in traditional economic data. For instance, the model picked up high recession risk in late 2008 during the Lehman Brothers bankruptcy, which was later confirmed as part of the Great Recession. This is also consistent with the role played by financial conditions in Growth-at-Risk estimates, as shown by <a href="https://www.aeaweb.org/articles?id=10.1257/aer.20161923" target="_blank">Adrian, Boyarchenko, and Giannone (2019)</a>.
+                        
+                        <div class="faq-figure">
+                            <img src="./FAQ/Figure1_US_EA.png" alt="Macroeconomic and Financial Conditions during Recessions and Expansions" class="faq-image">
+                            <div class="faq-caption">The chart above illustrates this relationship for the United States and euro area, showing how recessions (blue dots) are characterized by both weak economic activity and elevated financial stress, while expansions (orange dots) show the opposite pattern. The minimal overlap between the two distributions demonstrates why examining both indicators together improves recession detection.</div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-simple-item">
+                        <div class="faq-simple-question">Q: How are recessions measured?</div>
+                        <div class="faq-simple-answer">A: Official recession dates are determined by national business cycle dating committees: the <a href="https://www.nber.org/research/business-cycle-dating" target="_blank">NBER (National Bureau of Economic Research)</a> for the US, and the <a href="https://eabcn.org/dbc/home" target="_blank">CEPR (Centre for Economic Policy Research)</a> for the euro area. These committees identify periods of "significant decline in economic activity that is spread across the economy and lasts more than a few months". These official recession dates are represented on the dashboard as shaded vertical bands.</div>
+                    </div>
+
+                    <div class="faq-simple-item">
+                        <div class="faq-simple-question">Q: What is the current modeling strategy?</div>
+                        <div class="faq-simple-answer">A: The recession risk nowcast uses a Bayesian logit model that combines one macroeconomic indicator and one financial indicator for each country or region. For the US, the model uses the ISM PMI Manufacturing (macroeconomic) and the Composite Indicator of Systemic Stress or CISS (financial). For the euro area, it uses the Economic Sentiment Indicator or ESI (macroeconomic) paired with the CISS (financial). The model estimates the probability that the economy is currently in recession by projecting official recession dates onto these two predictors. The Bayesian framework naturally incorporates parameter uncertainty, providing not just point estimates but also confidence intervals around the recession probability.</div>
+                    </div>
+
+                    <div class="faq-simple-item">
+                        <div class="faq-simple-question">Q: What is the estimation sample?</div>
+                        <div class="faq-simple-answer">A: The recession risk estimates use data starting from different periods for each region/country: 1980:m1 for the US, and 1985:m1 for the euro area. The "latest" estimates run through the latest available month. The "real-time" estimates, instead, are produced with a pseudo out-of-sample expanding window approach, to highlight the model's stability over time and its accuracy in real-time conditions. Importantly, a 24-month estimation delay is applied in both cases to account for the inherent uncertainty in classifying periods as recessions or expansions in real-time, since official recession announcements typically come with significant delays.</div>
+                    </div>
+
+                    <div class="faq-simple-item">
+                        <div class="faq-simple-question">Q: How accurate is the model compared to other approaches?</div>
+                        <div class="faq-simple-answer">A: The model demonstrates strong accuracy in identifying both recessions and expansions. When benchmarked against the Survey of Professional Forecasters for the US, the nowcast shows similar ability to identify economic downturns but is more accurate at correctly identifying periods of expansion - meaning it produces fewer false alarms during normal economic times.
+
+                        The nowcast also compares favorably to popular unemployment-based recession indicators, such as the Sahm Rule, which signals a recession when the three-month average unemployment rate rises 0.5 percentage points above its 12-month low. While both approaches accurately identify the beginning of recessions, with the recession risk nowcast being slightly more timely, the nowcast proves more useful at detecting the end of recessions and the beginning of recoveries. This advantage likely stems from the fact that unemployment is a lagging indicator that tends to improve only after economic recovery is already underway, whereas the financial and survey-based indicators can capture turning points more quickly.</div>
+                    </div>
+
+
+                    <div class="faq-simple-item">
+                        <div class="faq-simple-question">Q: Are these estimates revised, and how reliable are they in real-time?</div>
+                        <div class="faq-simple-answer">A: The estimates are subject to minimal revisions because the underlying data sources are timely and stable. The CISS uses financial market prices (which are not revised), and the PMI/ESI surveys have only minor seasonal adjustments. Tests using real-time data vintages are available in <a href="https://doi.org/10.4337/9781035310050.00011" target="_blank">Furno and Giannone (2024)</a> and confirm high stability over time. The correlation between initial estimates and final estimates is 0.99 for the US and 0.98 for the euro area, confirming their reliability for real-time decision making.
+                        
+                        <div class="faq-figure">
+                            <img src="./FAQ/Figure2_vintages.png" alt="Recession Risk Stability across Vintages" class="faq-image">
+                            <div class="faq-caption">The chart above highlights the stability of the recession risk estimates across vintages of the Economic Sentiment Indicator (ESI) for the euro area.</div>
+                        </div>                        
+                        
+                        </div>
+                    </div>
+
+                    <div class="faq-simple-item">
+                        <div class="faq-simple-question">Q: Can users obtain the data underlying this analysis?</div>
+                        <div class="faq-simple-answer">A: Yes, the recession risk estimates can be downloaded directly from this website using the "Data" button in the dashboard. The downloaded files contain the time series of recession probabilities (median, 5th and 95th percentiles) for your selected countries and estimation method.
+                        
+                        The underlying input data has mixed availability: the Composite Indicator of Systemic Stress (CISS) is freely available from the ECB, and the Economic Sentiment Indicator is available from the European Commission. However, the ISM PMI Manufacturing data requires a subscription. For researchers, a complete replication package including code and documentation is available on <a href="https://github.com/amazon-science/nowcasting-recession-risk" target="_blank">GitHub</a>.</div>
+                    </div>  
+                    
+                    <div class="faq-simple-item">
+                        <div class="faq-simple-question">Q: What do people say about the nowcast?</div>
+                        <div class="faq-simple-answer">A: The recession risk nowcast has received coverage from Bloomberg (<a href="https://www.bloomberg.com/news/articles/2024-02-07/amazon-economists-tout-new-model-to-call-recessions-in-real-time" target="_blank">here</a> and <a href="https://www.bloomberg.com/news/newsletters/2024-02-08/world-economy-latest-us-trade-revamp" target="_blank">here</a>), which has also extended the methodology to additional countries. More recently, it was featured by Menzie Chinn in <a href="https://econbrowser.com/archives/2025/04/recession-now-the-message-from-final-revd-michigan-expectations-vs-pmi-and-ciss" target="_blank">this</a> Econbrowser post as part of the discussion on the state of the economy following April 2025's tariff announcements. 
+
+                        </div>
+                    </div>                      
+
+                    <div class="faq-simple-item">
+                        <div class="faq-simple-question">Q: How should I cite this work?</div>
+                        <div class="faq-simple-answer">
+                            A: Furno, F., & Giannone, D. (2024). Nowcasting recession risk. <em>Handbook of Research Methods and Applications in Macroeconomic Forecasting</em>, 156-186. Link <a href="https://doi.org/10.4337/9781035310050.00011" target="_blank">here</a>.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+
+    <footer class="site-footer">
+    <div class="footer-content">
+        <p class="footer-copyright">© 2026  Francesco Furno and Domenico Giannone. All rights reserved. Contact: <a href="mailto:info@recessionrisk.com">info@recessionrisk.com</a>.</p>
+    </div>
+</footer>
+</body>
+</html>
