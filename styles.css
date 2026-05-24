@@ -180,7 +180,7 @@ body {
    ========================================================================== */
 .content {
     padding: 1.5vh 3vw 2.5vh 3vw;
-    min-height: clamp(540px, 75vh, 700px);
+    min-height: clamp(620px, 80vh, 760px);
 }
 
 .tab-content {
@@ -863,7 +863,7 @@ body {
 .scatter-intro {
     color: #6c757d;
     line-height: 1.5;
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     text-align: justify;
     margin: 16px auto 0 auto;
     max-width: 800px;
@@ -911,7 +911,7 @@ body {
 
 .scatter-grid.mode-US,
 .scatter-grid.mode-EA {
-    grid-template-columns: minmax(0, 640px);
+    grid-template-columns: minmax(0, 720px);
     justify-content: center;
 }
 
