@@ -180,6 +180,7 @@ body {
    ========================================================================== */
 .content {
     padding: 1.5vh 3vw 2.5vh 3vw;
+    min-height: clamp(540px, 75vh, 700px);
 }
 
 .tab-content {
@@ -856,7 +857,7 @@ body {
 .scatter-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 0 16px 16px 16px;
 }
 
 .scatter-intro {
@@ -864,43 +865,42 @@ body {
     line-height: 1.5;
     font-size: 0.85rem;
     text-align: justify;
-    margin: 24px auto 0 auto;
+    margin: 16px auto 0 auto;
     max-width: 800px;
 }
 
 .scatter-subnav {
-    display: flex;
-    justify-content: flex-start;
-    gap: 0;
-    border-bottom: 1px solid #dee2e6;
-    margin: -1.5vh -3vw 24px -3vw;
-    padding: 0 3vw;
-    background: #fcfcfd;
+    display: inline-flex;
+    gap: 2px;
+    margin: 0 0 8px 0;
+    padding: 3px;
+    background: #f1f3f5;
+    border-radius: 8px;
 }
 
 .scatter-mode-btn {
     background: transparent;
     border: none;
-    padding: 0.8vh 1.5vw;
-    font-size: clamp(0.78rem, 1.1vh, 0.88rem);
+    padding: 5px 14px;
+    font-size: 0.82rem;
     font-weight: 500;
     color: #6c757d;
     cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s ease;
-    font-variant: small-caps;
-    letter-spacing: 0.4px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
     font-family: inherit;
 }
 
 .scatter-mode-btn:hover {
     color: #0072bd;
-    background: rgba(0, 114, 189, 0.04);
+    background: rgba(255, 255, 255, 0.6);
 }
 
 .scatter-mode-btn.active {
     color: #0072bd;
-    border-bottom-color: #0072bd;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    font-weight: 600;
 }
 
 .scatter-grid {
