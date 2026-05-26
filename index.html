@@ -29,7 +29,8 @@
         </div>
         
         <div class="tab-navigation">
-            <button class="tab-button active" data-tab="dashboard">DASHBOARD</button>
+            <button class="tab-button active" data-tab="dashboard">Nowcast</button>
+            <button class="tab-button" data-tab="data">Macro-Financial Conditions</button>
             <button class="tab-button" data-tab="faq">FAQs</button>
         </div>
      
@@ -54,7 +55,7 @@
                                 <polyline points="7,10 12,15 17,10"/>
                                 <line x1="12" y1="15" x2="12" y2="3"/>
                             </svg>
-                            Data
+                            Estimates
                         </button>                           
                         <button onclick="window.open('https://www.amazon.science/publications/nowcasting-recession-risk', '_blank')" class="download-button-header">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -150,6 +151,26 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Data Tab Content -->
+            <div id="data-tab" class="tab-content">
+                <div class="scatter-subnav">
+                    <button class="scatter-mode-btn active" data-mode="US">United States</button>
+                    <button class="scatter-mode-btn" data-mode="EA">Euro Area</button>
+                    <button class="scatter-mode-btn" data-mode="compare">Compare</button>
+                </div>
+                <div class="scatter-container">
+                    <div class="scatter-grid mode-US">
+                        <figure class="scatter-figure" data-country="US">
+                            <object type="image/svg+xml" data="scatter_plots/scatter_US.svg" aria-label="Scatter plot of macroeconomic activity vs. financial stress during US recessions and expansions"></object>
+                        </figure>
+                        <figure class="scatter-figure" data-country="EA">
+                            <object type="image/svg+xml" data="scatter_plots/scatter_EA.svg" aria-label="Scatter plot of macroeconomic activity vs. financial stress during euro area recessions and expansions"></object>
+                        </figure>
+                    </div>
+                    <p class="scatter-intro">Recessions (red) are characterized by the joint occurrence of soft economic sentiment and tight financial conditions, while expansions (blue) show the opposite pattern. The minimal overlap between the two distributions illustrates why combining macroeconomic and financial conditions improves recession detection.</p>
                 </div>
             </div>
 

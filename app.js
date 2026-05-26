@@ -1935,17 +1935,46 @@ class RecessionRiskVisualizer {
 function initializeTabs() {
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
+
+    const activate = (targetTab) => {
+        tabButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === targetTab));
+        tabContents.forEach(content => content.classList.toggle('active', content.id === `${targetTab}-tab`));
+    };
+
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
-            const targetTab = button.getAttribute('data-tab');
-            
-            // Remove active class from all tabs and buttons
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
-            
-            // Add active class to clicked button and corresponding content
+            const targetTab = button.dataset.tab;
+            if (location.hash !== `#${targetTab}`) {
+                history.pushState(null, '', `#${targetTab}`);
+            }
+            activate(targetTab);
+        });
+    });
+
+    window.addEventListener('popstate', () => {
+        const t = (location.hash || '#dashboard').slice(1);
+        if (document.getElementById(`${t}-tab`)) activate(t);
+    });
+
+    const initial = (location.hash || '#dashboard').slice(1);
+    if (document.getElementById(`${initial}-tab`)) {
+        activate(initial);
+    }
+}
+
+// Scatter plot tab mode switcher (US / EA / compare)
+function initializeScatterControls() {
+    const buttons = document.querySelectorAll('.scatter-mode-btn');
+    const grid = document.querySelector('.scatter-grid');
+    if (!grid || buttons.length === 0) return;
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const mode = button.getAttribute('data-mode');
+            buttons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            document.getElementById(`${targetTab}-tab`).classList.add('active');
+            grid.classList.remove('mode-US', 'mode-EA', 'mode-compare');
+            grid.classList.add(`mode-${mode}`);
         });
     });
 }
@@ -1953,6 +1982,7 @@ function initializeTabs() {
 // Initialize tabs when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     initializeTabs();
+    initializeScatterControls();
     new RecessionRiskVisualizer();
 });
         
