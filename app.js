@@ -1952,11 +1952,11 @@ function initializeTabs() {
     });
 
     window.addEventListener('popstate', () => {
-        const t = (location.hash || '#dashboard').slice(1);
+        const t = (location.hash || '#nowcast').slice(1);
         if (document.getElementById(`${t}-tab`)) activate(t);
     });
 
-    const initial = (location.hash || '#dashboard').slice(1);
+    const initial = (location.hash || '#nowcast').slice(1);
     if (document.getElementById(`${initial}-tab`)) {
         activate(initial);
     }
