@@ -156,13 +156,13 @@
 
             <!-- Data Tab Content -->
             <div id="conditions-tab" class="tab-content">
-                <div class="scatter-subnav">
-                    <button class="scatter-mode-btn active" data-mode="US">United States</button>
-                    <button class="scatter-mode-btn" data-mode="EA">Euro Area</button>
-                    <button class="scatter-mode-btn" data-mode="compare">Compare</button>
-                </div>
                 <div class="scatter-container">
                     <div class="scatter-grid mode-US">
+                        <div class="scatter-subnav" role="tablist" aria-label="Select region">
+                            <button class="scatter-mode-btn active" data-mode="US" title="United States">US</button>
+                            <button class="scatter-mode-btn" data-mode="EA" title="Euro Area">EA</button>
+                            <button class="scatter-mode-btn" data-mode="compare" title="Compare US &amp; Euro Area">Both</button>
+                        </div>
                         <figure class="scatter-figure" data-country="US">
                             <object type="image/svg+xml" data="scatter_plots/scatter_US.svg" aria-label="Scatter plot of macroeconomic activity vs. financial stress during US recessions and expansions"></object>
                         </figure>
